@@ -1,0 +1,4 @@
+outs:
+- md5: 1feb8a155fb05c5d7dffbbaedbc5dab4
+  size: 321807
+  path: pizza_data.csv
