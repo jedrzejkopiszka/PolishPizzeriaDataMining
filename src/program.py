@@ -2,7 +2,6 @@ from datetime import datetime
 import pickle
 import numpy as np
 from src import prepare_dataset
-import pandas as pd
 
 dates = ["01-01", "06-01", "01-05", "03-05", "15-08",
          "01-11", "11-11", "25-12", "26-12"]
@@ -27,7 +26,7 @@ for day_of_week in range(7):
     d[day_of_week] = np.mean(pizza_daily_copy.loc[pizza_daily_copy.weekday == day_of_week].pizza_count)
 
 
-def getSavings(model, test_X, test_Y, price_overevaluation, price_underevaluation):
+def get_savings(model, test_X, test_Y, price_overevaluation, price_underevaluation):
     pizza_sales_model = model.predict(test_X)
     suma = 0
     suma1 = 0
@@ -48,4 +47,4 @@ X_train, X_test, y_train, y_test = prepare_dataset.get_train_test_data()
 
 model = pickle.load(open('model.sav', 'rb'))
 
-getSavings(model, X_test, y_test, 15, 30)
+get_savings(model, X_test, y_test, 15, 30)

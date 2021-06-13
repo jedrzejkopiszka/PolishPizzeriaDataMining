@@ -7,7 +7,7 @@ import sys
 import os
 import io
 
-params = yaml.safe_load(open("../params.yaml"))['prepare']
+params = yaml.safe_load(open("params.yaml"))['prepare']
 
 if len(sys.argv) != 1:
     sys.stderr.write("Arguments error. Usage:\n")
@@ -20,8 +20,9 @@ TEST_SIZE = params["test_size"]
 def add_unix(row):
     return pd.Timestamp(row['date']).timestamp()
 
+
 def get_pizza_data():
-    pizza_data = pd.read_csv('../data/pizza_data.csv')
+    pizza_data = pd.read_csv('data/pizza_data.csv')
     pizza_data.drop(pizza_data.loc[(pizza_data.year == 2016) & (pizza_data.month == 10) & (pizza_data.day == 11)].index,
                     inplace=True)
     pizza_data = pizza_data.rename(columns={'count': 'pizza_count'})
@@ -55,10 +56,12 @@ def get_pizza_data():
     pizza_daily_copy.loc[(pizza_daily_copy.pizza_count == 0) & (pizza_daily_copy.weekday == 6), 'pizza_count'] = 108
     return pizza_daily_copy
 
+
 def get_train_test_data():
     pizza_daily_copy = get_pizza_data()
     X, y = pizza_daily_copy.iloc[:, :-1], pizza_daily_copy.pizza_count
     X_for_modeling, X_for_validation, y_for_modeling, y_for_validation = train_test_split(X, y, shuffle=False,
                                                                                           test_size=TEST_SIZE)
-    X_train, X_test, y_train, y_test = train_test_split(X_for_modeling, y_for_modeling, shuffle=False, test_size=TEST_SIZE)
+    X_train, X_test, y_train, y_test = train_test_split(X_for_modeling, y_for_modeling, shuffle=False,
+                                                        test_size=TEST_SIZE)
     return (X_train, X_test, y_train, y_test)

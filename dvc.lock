@@ -1,0 +1,25 @@
+schema: '2.0'
+stages:
+  train:
+    cmd: python src/train.py
+    deps:
+    - path: src/train.py
+      md5: da516131218de439201c0611c18e9afa
+      size: 1265
+    params:
+      params.yaml:
+        train.model_file_name: model.sav
+        train.seed: 124532
+  evaulate:
+    cmd: python src/evaluate.py
+    deps:
+    - path: src/evaluate.py
+      md5: 1f893b21fb9f8330d9e43476b17c08cc
+      size: 1006
+    - path: src/model.sav
+      md5: 08780d7416688ba32b4fee231e7962d9
+      size: 165747
+    params:
+      params.yaml:
+        evaluate.model_file_name: model.sav
+        evaluate.results_file_name: results.json

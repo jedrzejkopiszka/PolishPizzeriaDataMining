@@ -1,0 +1,11 @@
+{
+  "file_name": "model.sav",
+  "used_model": "GradientBoostingRegressor(random_state=124532, verbose=1)",
+  "best_parameters": {
+    "learning_rate": 0.12,
+    "max_depth": 3,
+    "max_features": "auto",
+    "n_estimators": 50
+  },
+  "mse": 10.51814766758091
+}

@@ -1,0 +1,16 @@
+stages:
+  train:
+    cmd: python src/train.py
+    deps:
+      - src/train.py
+    params:
+      - train.model_file_name
+      - train.seed
+  evaulate:
+    cmd: python src/evaluate.py
+    deps:
+      - src/evaluate.py
+      - src/model.sav
+    params:
+      - evaluate.model_file_name
+      - evaluate.results_file_name

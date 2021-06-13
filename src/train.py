@@ -6,7 +6,7 @@ from sklearn.model_selection import GridSearchCV, StratifiedKFold
 import prepare_dataset
 
 X_train, X_test, y_train, y_test = prepare_dataset.get_train_test_data()
-params = yaml.safe_load(open("../params.yaml"))['train']
+params = yaml.safe_load(open("params.yaml"))['train']
 
 param_grid = {
     'learning_rate': [0.001, 0.01, 0.1, 0.12, 0.15, 0.18, 0.2],
@@ -18,7 +18,7 @@ FILE_NAME = params['model_file_name']
 seed = params["seed"]
 np.random.seed(seed)
 
-model_gbt = GradientBoostingRegressor(random_state=seed,verbose=1)
+model_gbt = GradientBoostingRegressor(random_state=seed, verbose=1)
 
 
 def grid_search_wrapper():
