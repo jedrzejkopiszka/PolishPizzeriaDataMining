@@ -1,21 +1,37 @@
-import prepate_dataset
-from sklearn.metrics import mean_squared_error, mean_absolute_error, make_scorer
+import pickle
+import numpy as np
+import yaml
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.model_selection import GridSearchCV, StratifiedKFold
+import prepare_dataset
 
-X_y, modeling_validation, train_test = prepate_dataset.get_train_test_data()
+X_train, X_test, y_train, y_test = prepare_dataset.get_train_test_data()
+params = yaml.safe_load(open("../params.yaml"))['train']
 
-#baseline model
-def basline_model(y_test,X_train,X_test,y_train):
-    baseline_test = y_test.to_frame()
-    baseline_test['predicted_pizza_count'] = 0
-    X_train['pizza_count'] = y_train.values
-    for index, row in X_test.iterrows():
-        baseline_test.loc[index, 'predicted_pizza_count'] = \
-            X_train.loc[X_train.weekday == row.weekday].pizza_count.mean()
-    baseline_test['difference'] = baseline_test.apply(lambda x: abs(x['predicted_pizza_count'] - x['pizza_count']),
-                                                      axis=1)
+param_grid = {
+    'learning_rate': [0.001, 0.01, 0.1, 0.12, 0.15, 0.18, 0.2],
+    'max_depth': [1, 2, 3, 4, 5, 7, 9],
+    'n_estimators': [10, 20, 35, 50, 75, 100, 200],
+    'max_features': ['auto', None]
+}
+FILE_NAME = params['model_file_name']
+seed = params["seed"]
+np.random.seed(seed)
 
-    print("MAE calculated \"by handy\": ", baseline_test.difference.mean())
-    print("Sum of errors: ", baseline_test.difference.sum())
-    print("MSE: ", mean_squared_error(y_test, baseline_test.predicted_pizza_count))
-    print("MAE using built-in formula: ", mean_absolute_error(y_test, baseline_test.predicted_pizza_count))
+model_gbt = GradientBoostingRegressor(random_state=seed,verbose=1)
 
+
+def grid_search_wrapper():
+    skf = StratifiedKFold(n_splits=2)
+    grid_search = GridSearchCV(model_gbt, param_grid, scoring='neg_mean_absolute_error', refit=True,
+                               cv=skf, return_train_score=True, n_jobs=-1, verbose=1)
+    grid_search.fit(X_train, y_train)
+    print('################################----DONE----################################')
+    return grid_search
+
+
+#
+grid_search = grid_search_wrapper()
+pickle.dump(grid_search, open(FILE_NAME, "wb"))
+
+print("Model saved successfully to {}".format(FILE_NAME))

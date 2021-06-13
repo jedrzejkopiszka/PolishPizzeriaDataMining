@@ -1,0 +1,10 @@
+prepare:
+  test_size: 61
+
+train:
+  model_file_name: "model.sav"
+  seed: 124532
+
+evaluate:
+  model_file_name: "model.sav"
+  results_file_name: "results.json"
